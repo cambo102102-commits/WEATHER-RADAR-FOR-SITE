@@ -16,9 +16,7 @@
       background: #05070a;
     }
 
-    #map {
-      height: 100vh;
-    }
+    #map { height: 100vh; }
 
     .title-box {
       position: absolute;
@@ -49,8 +47,8 @@
 
     .logo-box {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 18px;
+      right: 18px;
       z-index: 1000;
     }
 
@@ -65,14 +63,33 @@
       bottom: 20px;
       left: 20px;
       z-index: 999;
-      padding: 12px;
       border-radius: 12px;
       background: rgba(0, 0, 0, 0.78);
       color: white;
       font-family: Arial, sans-serif;
       box-shadow: 0 0 18px rgba(0, 180, 255, 0.25);
-      min-width: 230px;
-      max-width: 260px;
+      min-width: 245px;
+      max-width: 285px;
+      overflow: hidden;
+    }
+
+    .control-header {
+      background: rgba(11, 143, 211, 0.95);
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: bold;
+      user-select: none;
+    }
+
+    .control-content {
+      padding: 12px;
+      display: block;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .control-box.collapsed .control-content {
+      display: none;
     }
 
     .control-box button {
@@ -84,10 +101,6 @@
       cursor: pointer;
       margin-bottom: 8px;
       font-weight: bold;
-    }
-
-    .control-box button:hover {
-      background: #15a9f5;
     }
 
     .control-box label {
@@ -146,6 +159,49 @@
     .leaflet-control-attribution a {
       color: #8fd3ff !important;
     }
+
+    @media (max-width: 700px) {
+      .title-box {
+        top: 12px;
+        left: 12px;
+        padding: 8px 12px;
+        max-width: 210px;
+      }
+
+      .title-box h1 { font-size: 15px; }
+      .title-box p { font-size: 10px; }
+
+      .logo-box {
+        top: 10px;
+        right: 10px;
+      }
+
+      .logo-box img { height: 45px; }
+
+      .control-box {
+        left: 10px;
+        bottom: 10px;
+        min-width: 200px;
+        max-width: 230px;
+      }
+
+      .control-box input[type="range"] {
+        width: 145px;
+      }
+
+      .legend-box {
+        right: 10px;
+        bottom: 10px;
+        font-size: 10px;
+        padding: 8px;
+        max-width: 145px;
+      }
+
+      .swatch {
+        width: 14px;
+        height: 8px;
+      }
+    }
   </style>
 </head>
 
@@ -159,45 +215,71 @@
 
 <div class="title-box">
   <h1>LIVE U.S. RADAR</h1>
-  <p>NEXRAD Reflectivity Loop + NWS Alerts</p>
+  <p>NEXRAD Loop + NWS Alerts + WPC/SPC Layers</p>
 </div>
 
-<div class="control-box">
-  <button id="playPauseBtn">Pause</button><br>
+<div class="control-box collapsed" id="controlBox">
+  <div class="control-header" id="controlHeader">☰ Radar Options</div>
 
-  <label for="opacitySlider">Radar Opacity</label><br>
-  <input id="opacitySlider" type="range" min="0" max="1" step="0.05" value="0.70">
+  <div class="control-content">
+    <button id="playPauseBtn">Pause</button><br>
 
-  <br><br>
+    <label for="opacitySlider">Radar Opacity</label><br>
+    <input id="opacitySlider" type="range" min="0" max="1" step="0.05" value="0.70">
 
-  <label for="speedSlider">Loop Speed</label><br>
-  <input id="speedSlider" type="range" min="300" max="2000" step="100" value="800">
+    <br><br>
 
-  <div id="frameText">Frame 1 of 7</div>
+    <label for="speedSlider">Loop Speed</label><br>
+    <input id="speedSlider" type="range" min="300" max="2000" step="100" value="800">
 
-  <hr style="border-color: rgba(255,255,255,0.2);">
+    <div id="frameText">Frame 1 of 7</div>
 
-  <div class="layer-row">
-    <input type="checkbox" id="torWarnToggle" checked>
-    <label for="torWarnToggle">Tornado Warnings</label>
+    <hr style="border-color: rgba(255,255,255,0.2);">
+
+    <div class="layer-row">
+      <input type="checkbox" id="torWarnToggle" checked>
+      <label for="torWarnToggle">Tornado Warnings</label>
+    </div>
+
+    <div class="layer-row">
+      <input type="checkbox" id="svrWarnToggle" checked>
+      <label for="svrWarnToggle">Severe T-Storm Warnings</label>
+    </div>
+
+    <div class="layer-row">
+      <input type="checkbox" id="ffWarnToggle" checked>
+      <label for="ffWarnToggle">Flash Flood Warnings</label>
+    </div>
+
+    <div class="layer-row">
+      <input type="checkbox" id="watchToggle" checked>
+      <label for="watchToggle">Tornado / Severe Watches</label>
+    </div>
+
+    <hr style="border-color: rgba(255,255,255,0.2);">
+
+    <div class="layer-row">
+      <input type="checkbox" id="surfaceToggle">
+      <label for="surfaceToggle">WPC Surface Analysis</label>
+    </div>
+
+    <div class="layer-row">
+      <input type="checkbox" id="spcDay1Toggle">
+      <label for="spcDay1Toggle">SPC Day 1 Outlook</label>
+    </div>
+
+    <div class="layer-row">
+      <input type="checkbox" id="spcDay2Toggle">
+      <label for="spcDay2Toggle">SPC Day 2 Outlook</label>
+    </div>
+
+    <div class="layer-row">
+      <input type="checkbox" id="spcDay3Toggle">
+      <label for="spcDay3Toggle">SPC Day 3 Outlook</label>
+    </div>
+
+    <div id="alertStatus">Loading alerts...</div>
   </div>
-
-  <div class="layer-row">
-    <input type="checkbox" id="svrWarnToggle" checked>
-    <label for="svrWarnToggle">Severe T-Storm Warnings</label>
-  </div>
-
-  <div class="layer-row">
-    <input type="checkbox" id="ffWarnToggle" checked>
-    <label for="ffWarnToggle">Flash Flood Warnings</label>
-  </div>
-
-  <div class="layer-row">
-    <input type="checkbox" id="watchToggle" checked>
-    <label for="watchToggle">Tornado / Severe Watches</label>
-  </div>
-
-  <div id="alertStatus">Loading alerts...</div>
 </div>
 
 <div class="legend-box">
@@ -207,11 +289,17 @@
   <div class="legend-item"><span class="swatch" style="background:#00ff66;"></span>Flash Flood Warning</div>
   <div class="legend-item"><span class="swatch" style="background:#ff66ff;"></span>Tornado Watch</div>
   <div class="legend-item"><span class="swatch" style="background:#ffaa00;"></span>Severe T-Storm Watch</div>
+  <div class="legend-item"><span class="swatch" style="background:#ffffff;"></span>WPC / SPC Layers</div>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
 
 <script>
+  document.getElementById('controlHeader').addEventListener('click', function () {
+    document.getElementById('controlBox').classList.toggle('collapsed');
+  });
+
   const map = L.map('map', {
     zoomControl: true,
     scrollWheelZoom: true
@@ -260,7 +348,6 @@
     radarLayers.forEach((layer, i) => {
       layer.setOpacity(i === index ? opacitySlider.value : 0);
     });
-
     frameText.textContent = `Frame ${index + 1} of ${radarLayers.length}`;
   }
 
@@ -301,27 +388,54 @@
   const flashFloodWarnings = L.layerGroup().addTo(map);
   const watches = L.layerGroup().addTo(map);
 
+  const wpcSurfaceLayer = L.imageOverlay(
+    'https://www.wpc.ncep.noaa.gov/sfc/usfntsfcwbg.gif?t=' + Date.now(),
+    [[24.0, -125.0], [50.0, -66.0]],
+    {
+      opacity: 0.72,
+      attribution: 'WPC Surface Analysis'
+    }
+  );
+
+  const spcServiceUrl = 'https://mapservices.weather.noaa.gov/vector/rest/services/outlooks/SPC_wx_outlks/MapServer';
+
+  const spcDay1Layer = L.esri.dynamicMapLayer({
+    url: spcServiceUrl,
+    layers: [1],
+    opacity: 0.58,
+    attribution: 'NOAA SPC Day 1 Outlook'
+  });
+
+  const spcDay2Layer = L.esri.dynamicMapLayer({
+    url: spcServiceUrl,
+    layers: [9],
+    opacity: 0.58,
+    attribution: 'NOAA SPC Day 2 Outlook'
+  });
+
+  const spcDay3Layer = L.esri.dynamicMapLayer({
+    url: spcServiceUrl,
+    layers: [17],
+    opacity: 0.58,
+    attribution: 'NOAA SPC Day 3 Outlook'
+  });
+
   function getAlertStyle(eventName) {
     if (eventName === 'Tornado Warning') {
       return { color: '#ff0033', weight: 3, fillColor: '#ff0033', fillOpacity: 0.15 };
     }
-
     if (eventName === 'Severe Thunderstorm Warning') {
       return { color: '#ffd400', weight: 3, fillColor: '#ffd400', fillOpacity: 0.13 };
     }
-
     if (eventName === 'Flash Flood Warning') {
       return { color: '#00ff66', weight: 3, fillColor: '#00ff66', fillOpacity: 0.13 };
     }
-
     if (eventName === 'Tornado Watch') {
       return { color: '#ff66ff', weight: 2, fillColor: '#ff66ff', fillOpacity: 0.08 };
     }
-
     if (eventName === 'Severe Thunderstorm Watch') {
       return { color: '#ffaa00', weight: 2, fillColor: '#ffaa00', fillOpacity: 0.08 };
     }
-
     return { color: '#ffffff', weight: 2, fillColor: '#ffffff', fillOpacity: 0.08 };
   }
 
@@ -358,17 +472,13 @@
 
     try {
       const response = await fetch('https://api.weather.gov/alerts/active?status=actual&message_type=alert');
-
-      if (!response.ok) {
-        throw new Error('NWS alerts failed to load');
-      }
+      if (!response.ok) throw new Error('NWS alerts failed to load');
 
       const data = await response.json();
       let count = 0;
 
       data.features.forEach(feature => {
         const eventName = feature.properties.event;
-
         if (!wantedAlerts.includes(eventName)) return;
         if (!feature.geometry) return;
 
@@ -379,7 +489,6 @@
           style: getAlertStyle(eventName),
           onEachFeature: function (feature, layer) {
             const p = feature.properties;
-
             layer.bindPopup(`
               <strong>${p.event}</strong><br>
               <b>Area:</b> ${p.areaDesc || 'N/A'}<br>
@@ -405,7 +514,6 @@
 
   function setupToggle(toggleId, layerGroup) {
     const checkbox = document.getElementById(toggleId);
-
     checkbox.addEventListener('change', function () {
       if (this.checked) {
         map.addLayer(layerGroup);
@@ -419,9 +527,12 @@
   setupToggle('svrWarnToggle', severeWarnings);
   setupToggle('ffWarnToggle', flashFloodWarnings);
   setupToggle('watchToggle', watches);
+  setupToggle('surfaceToggle', wpcSurfaceLayer);
+  setupToggle('spcDay1Toggle', spcDay1Layer);
+  setupToggle('spcDay2Toggle', spcDay2Layer);
+  setupToggle('spcDay3Toggle', spcDay3Layer);
 
   loadAlerts();
-
   setInterval(loadAlerts, 120000);
 
   setInterval(() => {
